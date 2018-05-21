@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.liyou.service.cms</groupId>
+    <artifactId>cms-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <modules>
+        <module>cms-core</module>
+        <module>cms-manager-webapp</module>
+        <module>cms-client</module>
+    </modules>
+    <parent>
+        <groupId>com.liyou.framework</groupId>
+        <artifactId>framework-parent</artifactId>
+        <version>2.0.11</version>
+    </parent>
+    <packaging>pom</packaging>
+
+    <properties>
+        <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
+    </properties>
+
+    <!-- 仓库地址 -->
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>Team Nexus Repository</name>
+            <url>http://gitlab.tuboshi.co:8081/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
+    <!-- 插件地址 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>liyou-nexus</id>
+            <name>Team Nexus Repository</name>
+            <url>http://gitlab.tuboshi.co:8081/nexus/content/repositories/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- 设定持续集成发布包服务器 -->
+    <distributionManagement>
+        <repository>
+            <id>tbs-releases</id>
+            <name>Releases</name>
+            <url>http://gitlab.tuboshi.co:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>tbs-snapshots</id>
+            <name>Snapshots</name>
+            <url>http://gitlab.tuboshi.co:8081/nexus/content/repositories/snapshots/</url>
+            <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+</project>
