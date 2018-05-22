@@ -113,7 +113,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public List<ResourceItemEntity> findItem(IExpression<Boolean> expression) {
 
-        return itemDao.findAll(expression,new Sort("sort"));
+        return itemDao.findAll(expression,new Sort(Sort.Direction.DESC,"sort"));
     }
 
     @Override

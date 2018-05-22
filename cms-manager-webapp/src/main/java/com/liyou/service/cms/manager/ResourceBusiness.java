@@ -84,7 +84,7 @@ public class ResourceBusiness implements ResourceClient {
                     .addEquals("resourceId",definition.getId())
                     .add(or);
 
-            Page<ResourceItemEntity> data = resourceService.findItem( predicate, JpaPageHelp.convert(pageable,new Sort("sort")) );
+            Page<ResourceItemEntity> data = resourceService.findItem( predicate, JpaPageHelp.convert(pageable,new Sort(Sort.Direction.DESC,"sort")) );
 
             return Response.success(JpaPageHelp.convert(data.map(this::convert),pageable));
         }catch (Exception e){
