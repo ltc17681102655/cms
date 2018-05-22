@@ -16,7 +16,7 @@
 
         <dependency>
             <groupId>com.liyou.framework</groupId>
-            <artifactId>framework-base</artifactId>
+            <artifactId>framework-common</artifactId>
         </dependency>
 
         <dependency>

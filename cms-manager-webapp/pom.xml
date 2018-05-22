@@ -12,7 +12,11 @@
     <artifactId>cms-manager-webapp</artifactId>
 
 
+    <properties>
 
+        <mainClass>com.liyou.service.cms.manager.CmsServerApplication</mainClass>
+
+    </properties>
 
     <dependencies>
 
@@ -80,4 +84,16 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>
