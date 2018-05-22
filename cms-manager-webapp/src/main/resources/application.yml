@@ -1,0 +1,92 @@
+#spring 配置
+spring:
+  profiles:
+      active: dev
+  datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://mysql.dev.tuboshi.co:3306/sHouseApp_pre?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+      password: LangBoshi^666
+      username: tbs
+      type: com.zaxxer.hikari.HikariDataSource
+      hikari:
+        connection-test-query: SELECT 1
+        connection-init-sql: SELECT 1
+        maximum-pool-size: 40
+        minimum-idle: 10
+  jpa:
+      hibernate:
+        ddl-auto: none
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      show-sql: true
+      database-platform: org.hibernate.dialect.MySQLDialect
+  application:
+      name: "cms-${spring.profiles.active}-${dubbo.registry.group}-@project.version@"
+  cloud:
+      zookeeper:
+          connect-string: ${dubbo.registry.address}
+          discovery:
+            preferIpAddress: true
+            uri-spec: "{scheme}://{address}:{port}/${server.context-path}"
+
+  redis:
+      host: redis.dev.tuboshi.co
+      port: 6379
+      password: dev
+
+#基本信息
+info:
+  build:
+    group:      @project.groupId@
+    artifact:   @project.artifactId@
+    version:    @project.version@
+
+#关闭监控限制
+management:
+  security:
+    enabled: false
+
+#开启 ip 白名单
+actuator.ip_white_list: 10.236.0.*,10.23.*.*,*.tuboshi.co,localhost,127.0.0.1,0:0:0:0:0:0:0:1
+
+#日志配置
+logging:
+  pattern:
+    #console: "[${project.artifactId}] %d %p [%t] %C.%M[%L] | %m%n"
+  level:
+
+
+#dubbo 配置
+dubbo:
+  application:
+    name: ${spring.application.name}
+  registry:
+    protocol: zookeeper
+    address: zk1.dev.tuboshi.co:2181,zk2.dev.tuboshi.co:2181,zk3.dev.tuboshi.co:2181
+    group:
+  protocol:
+    port: -1
+  consumer:
+    retries: 0
+    check: false
+    version: 1.0.0
+  provider:
+    version: 1.0.0
+
+server:
+  context-path: /cms
+
+packet_enable: false
+
+
+#oss
+oss:
+  bucketname:
+    2boss
+  accessKeyId:
+    i0kunUIFC7eTdEPr
+  accessKeySecret:
+    UB0gOqzm78JIQiNHaYsc2y0kMeX1a1
+  endpoint:
+    https://oss-cn-hangzhou.aliyuncs.com
+
