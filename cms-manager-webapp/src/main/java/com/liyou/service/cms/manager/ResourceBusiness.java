@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /***
  *
@@ -54,7 +55,7 @@ public class ResourceBusiness implements ResourceClient {
 
             List<ResourceItemEntity>  data = resourceService.findItem( predicate );
 
-            return Response.success(data);
+            return Response.success(data.stream().map(this::convert).collect(Collectors.toList()));
         }catch (Exception e){
             return Response.failure(e);
         }
