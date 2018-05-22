@@ -15,6 +15,7 @@ import com.liyou.service.cms.core.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
  *   @author linxiaohui
  *   @date 2018/5/21
  ***/
+@Service
 public class ResourceBusiness implements ResourceClient {
 
     @Autowired
@@ -52,7 +54,7 @@ public class ResourceBusiness implements ResourceClient {
 
             List<ResourceItemEntity>  data = resourceService.findItem( predicate );
 
-            return Response.success();
+            return Response.success(data);
         }catch (Exception e){
             return Response.failure(e);
         }
@@ -83,7 +85,7 @@ public class ResourceBusiness implements ResourceClient {
 
             Page<ResourceItemEntity> data = resourceService.findItem( predicate, JpaPageHelp.convert(pageable,new Sort("sort")) );
 
-            return Response.success();
+            return Response.success(JpaPageHelp.convert(data.map(this::convert),pageable));
         }catch (Exception e){
             return Response.failure(e);
         }
