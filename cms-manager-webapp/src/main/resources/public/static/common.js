@@ -174,7 +174,6 @@ $.ajaxSetup({
     global: true,
     headers: {TBSAccessToken: token},
     beforeSend: function (deferred, xhr) {
-        console.log("------")
         tryUnpack(xhr);
         deferred
             .always(function () {

@@ -21,7 +21,8 @@
 
 
     <!-- json-editor -->
-    <script src="https://cdn.bootcss.com/json-editor/0.7.22/jsoneditor.min.js"></script>
+    <!--<script src="https://cdn.bootcss.com/json-editor/0.7.22/jsoneditor.min.js"></script>-->
+    <script src="static/jsoneditor.js"></script>
     <script src="static/jsoneditor.zh-cn.js"></script>
 
     <!-- cookie -->
@@ -247,6 +248,7 @@
                 e.preventDefault();
 
                 $("#json").val(JSON.stringify(JSEditor.getValue()));
+                console.log(JSEditor.validate())
                 if (JSEditor.validate().length > 0) {
                     JSEditor.setOption("show_errors", "always");
                 } else {
