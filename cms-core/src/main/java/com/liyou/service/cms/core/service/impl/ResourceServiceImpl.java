@@ -99,7 +99,7 @@ public class ResourceServiceImpl implements ResourceService {
         if( itemEntity.getId() != null ){
             ResourceItemEntity item =  itemDao.getOne(itemEntity.getId());
             item.setJson( itemEntity.getJson() );
-            item.setScope( item.getScope() );
+            item.setScope( itemEntity.getScope() );
             item.setSort( itemEntity.getSort() );
             itemDao.save(item);
             return item;
@@ -114,6 +114,12 @@ public class ResourceServiceImpl implements ResourceService {
     public List<ResourceItemEntity> findItem(IExpression<Boolean> expression) {
 
         return itemDao.findAll(expression,new Sort(Sort.Direction.DESC,"sort"));
+    }
+
+    @Override
+    public List<ResourceItemEntity> findItem(IExpression<Boolean> expression, Integer limit) {
+
+        return itemDao.findTop(expression,limit,new Sort(Sort.Direction.DESC,"sort"));
     }
 
     @Override

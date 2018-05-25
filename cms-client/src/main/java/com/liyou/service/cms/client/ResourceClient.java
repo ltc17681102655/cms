@@ -23,6 +23,14 @@ public interface ResourceClient {
      */
      Response<List<ResourceItem>> findResourceItem(Integer scope, @NotBlank String position);
 
+    /**
+     * 查找资源选项
+     * @param scope
+     * @param position
+     * @return
+     */
+    Response<List<ResourceItem>> findResourceItem(Integer scope, @NotBlank String position,Integer limit);
+
 
     /**
      * 分页查找资源

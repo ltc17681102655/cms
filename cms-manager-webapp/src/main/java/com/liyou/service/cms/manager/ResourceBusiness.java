@@ -42,6 +42,19 @@ public class ResourceBusiness implements ResourceClient {
     public Response<List<ResourceItem>> findResourceItem(Integer scope, String position) {
 
 
+        return findResourceItem(scope,position,-1);
+    }
+
+    /**
+     * 查找资源选项
+     *
+     * @param scope
+     * @param position
+     * @param limit
+     * @return
+     */
+    @Override
+    public Response<List<ResourceItem>> findResourceItem(Integer scope, String position, Integer limit) {
         try {
             ResourceDefinitionEntity definition =  resourceService.findDefinitionByPosition(position);
 
@@ -53,7 +66,9 @@ public class ResourceBusiness implements ResourceClient {
                     .addEquals("resourceId",definition.getId())
                     .add(or);
 
-            List<ResourceItemEntity>  data = resourceService.findItem( predicate );
+            List<ResourceItemEntity>  data = limit < 0
+                    ? resourceService.findItem( predicate )
+                    : resourceService.findItem( predicate , limit);
 
             return Response.success(data.stream().map(this::convert).collect(Collectors.toList()));
         }catch (Exception e){

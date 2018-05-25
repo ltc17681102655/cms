@@ -39,6 +39,7 @@ public interface ResourceService {
 
     List<ResourceItemEntity> findItem(IExpression<Boolean> expression);
 
+    List<ResourceItemEntity> findItem(IExpression<Boolean> expression,Integer limit);
 
     Page<ResourceItemEntity> findItem(IExpression<Boolean> expression,Pageable pageable);
 
