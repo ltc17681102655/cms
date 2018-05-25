@@ -98,30 +98,26 @@
             JSEditor.setValue(JSON.parse(data.json), true);
         }
 
-        function ajaxRequest(params) {
-            $.get('resourceItem/list', $("#itemForm").serializeArray(), function (data) {
-
-                var arrays = [];
-
-                $(data).each(function () {
-                    var row = $.extend(
-                        {},
-                        JSON.parse(this.json),
-                        {
-                            "$extends.id": this.id,
-                            "$extends.sort": this.sort,
-                            "$extends.createdDate": this.createdDate ? new Date(this.createdDate).pattern("yyyy-MM-dd HH:mm:ss") :"" ,
-                            "$extends.lastModifiedDate": this.createdDate ? new Date(this.lastModifiedDate).pattern("yyyy-MM-dd HH:mm:ss") :"",
-                            "$extends.scope": this.scope,
-                            "$extends.cityName": this.city ? this.city["udcName"] : "",
-                            json: this.json
-                        });
-                    arrays.push(row)
-                });
-
-                params.success(arrays)
-            })
+        function responseHandler(data) {
+            var arrays = [];
+            $(data.content).each(function () {
+                var row = $.extend(
+                    {},
+                    JSON.parse(this.json),
+                    {
+                        "$extends.id": this.id,
+                        "$extends.sort": this.sort,
+                        "$extends.createdDate": this.createdDate ? new Date(this.createdDate).pattern("yyyy-MM-dd HH:mm:ss") :"" ,
+                        "$extends.lastModifiedDate": this.createdDate ? new Date(this.lastModifiedDate).pattern("yyyy-MM-dd HH:mm:ss") :"",
+                        "$extends.scope": this.scope,
+                        "$extends.cityName": this.city ? this.city["udcName"] : "",
+                        json: this.json
+                    });
+                arrays.push(row)
+            });
+            return {rows:arrays,total:data.totalElements};
         }
+
 
         function girdReload() {
             $("#grid").bootstrapTable("refresh");
@@ -132,7 +128,7 @@
 
 
             $("input[name=resourceId]").val(rid);
-            $("#gridDiv").html('<div style="height: 5px">&nbsp;</div><table id="grid"></table>');
+            $("#gridDiv").html('<div style="height: 5px">&nbsp;</div><table id="grid" class="table-striped"></table>');
             $("#itemForm").show();
             var config = configMap["_" + rid];
 
@@ -148,6 +144,10 @@
             var columns = [{title: "操作", formatter: formatterAction}];
 
             function imageFormat(v, r, o) {
+
+                if( !v  ){
+                    return "";
+                }
 
                 var IMAGE_MAX_WIDTH_100 = (v || "").indexOf('img.2boss.cn') > -1 ? "?x-oss-process=image/resize,w_30/format,jpg" : "",
                     IMAGE_MAX_WIDTH_600 = (v || "").indexOf('img.2boss.cn') > -1 ? "?x-oss-process=image/resize,w_600/format,jpg" : "",
@@ -190,7 +190,20 @@
 
 
             $('#grid').bootstrapTable({
-                ajax: ajaxRequest,
+                url:"resourceItem/list",
+                queryParams:function (params) {
+                    var paramsArray = $("#itemForm").serializeArray();
+                    for(var name in params){
+                        paramsArray.push({name:name,value:params[name]})
+                    }
+                    paramsArray.push({name:"pageIdnex",value:params["pageNumber"]});
+
+                    return paramsArray;
+                },
+                responseHandler:responseHandler,
+                sidePagination:"server",
+                queryParamsType :"page",
+                pagination:true,
                 columns: columns
             }).on("post-body.bs.table", function () {
                 $("#grid").find('[data-toggle="popover"]').popover();

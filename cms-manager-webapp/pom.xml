@@ -52,6 +52,11 @@
 
         <dependency>
             <groupId>com.liyou.framework</groupId>
+            <artifactId>framework-page</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.liyou.framework</groupId>
             <artifactId>framework-dubbo</artifactId>
         </dependency>
 

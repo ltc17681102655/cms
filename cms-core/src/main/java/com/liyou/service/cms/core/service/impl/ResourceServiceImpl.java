@@ -117,9 +117,9 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public List<ResourceItemEntity> findItem(IExpression<Boolean> expression, Integer limit) {
+    public List<ResourceItemEntity> findItem(IExpression<Boolean> expression,Integer offset, Integer limit) {
 
-        return itemDao.findTop(expression,limit,new Sort(Sort.Direction.DESC,"sort"));
+        return itemDao.findLimit(expression,offset,limit,new Sort(Sort.Direction.DESC,"sort"));
     }
 
     @Override

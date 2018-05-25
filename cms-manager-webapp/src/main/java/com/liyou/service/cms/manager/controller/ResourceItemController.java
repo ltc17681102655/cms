@@ -4,6 +4,8 @@ import com.liyou.framework.base.IfValue;
 import com.liyou.framework.base.criteria.Expressions;
 import com.liyou.framework.base.criteria.predicate.CompoundPredicate;
 import com.liyou.framework.base.model.Response;
+import com.liyou.framework.jpa.support.JpaPageHelp;
+import com.liyou.framework.page.PageRequestCustom;
 import com.liyou.service.cms.core.repository.ResourceDefinitionRepo;
 import com.liyou.service.cms.core.repository.ResourceItemRepo;
 import com.liyou.service.cms.core.entity.ResourceDefinitionEntity;
@@ -11,6 +13,8 @@ import com.liyou.service.cms.core.entity.ResourceItemEntity;
 import com.liyou.service.cms.core.service.ResourceService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,12 +37,12 @@ public class ResourceItemController{
 
     @ResponseBody
     @RequestMapping("list")
-    public Object list(Long resourceId,Integer scope){
+    public Object list(Long resourceId, Integer scope, PageRequestCustom pageRequestCustom){
 
         CompoundPredicate predicate =  Expressions.and()
                 .addEquals("resourceId",resourceId)
                 .addEquals("scope",scope, IfValue.IF_VALUE_NOT_NULL);
-        return service.findItem(predicate);
+        return service.findItem(predicate, JpaPageHelp.convert(pageRequestCustom));
     }
 
 

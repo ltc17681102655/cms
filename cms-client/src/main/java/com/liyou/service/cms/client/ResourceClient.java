@@ -29,7 +29,7 @@ public interface ResourceClient {
      * @param position
      * @return
      */
-    Response<List<ResourceItem>> findResourceItem(Integer scope, @NotBlank String position,Integer limit);
+    Response<List<ResourceItem>> findResourceItem(Integer scope, @NotBlank String position,Integer offset,Integer limit);
 
 
     /**

@@ -31,7 +31,7 @@ public class UdcUtils {
     private static Map<Integer, UdcInfoEntity> findAll(){
 
         if (lastModifyTime == 0 ||
-                lastModifyTime + TimeUnit.MILLISECONDS.convert(15, TimeUnit.MINUTES) > System.currentTimeMillis()) {
+                lastModifyTime + TimeUnit.MILLISECONDS.convert(15, TimeUnit.MINUTES) < System.currentTimeMillis()) {
 
             synchronized (LOCK) {
 

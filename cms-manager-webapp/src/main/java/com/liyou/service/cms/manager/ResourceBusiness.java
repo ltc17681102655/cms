@@ -42,7 +42,7 @@ public class ResourceBusiness implements ResourceClient {
     public Response<List<ResourceItem>> findResourceItem(Integer scope, String position) {
 
 
-        return findResourceItem(scope,position,-1);
+        return findResourceItem(scope,position,0,2000);
     }
 
     /**
@@ -54,7 +54,7 @@ public class ResourceBusiness implements ResourceClient {
      * @return
      */
     @Override
-    public Response<List<ResourceItem>> findResourceItem(Integer scope, String position, Integer limit) {
+    public Response<List<ResourceItem>> findResourceItem(Integer scope, String position,Integer offset, Integer limit) {
         try {
             ResourceDefinitionEntity definition =  resourceService.findDefinitionByPosition(position);
 
@@ -68,7 +68,7 @@ public class ResourceBusiness implements ResourceClient {
 
             List<ResourceItemEntity>  data = limit < 0
                     ? resourceService.findItem( predicate )
-                    : resourceService.findItem( predicate , limit);
+                    : resourceService.findItem( predicate ,offset, limit);
 
             return Response.success(data.stream().map(this::convert).collect(Collectors.toList()));
         }catch (Exception e){
