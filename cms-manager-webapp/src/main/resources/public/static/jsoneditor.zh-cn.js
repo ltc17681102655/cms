@@ -101,13 +101,16 @@ JSONEditor.defaults.editors.img = JSONEditor.AbstractEditor.extend({
         this.preview.innerHTML = '';
 
         if( !r && !this.value) return;
+        if( !r && this.value ){
+            r = {};
+        }
 
 
         // {size: 3023, mime: "image/png", url: "https://img.2boss.cn/resource/img/9c318cbe66239105fbce2e3b00a1a475.jpg"}
-        if(r.size > 0){
+        if( r ){
             if(this.last_preview === this.value) return;
             this.last_preview = this.value;
-            if(r["url"] ){
+            if(r["size"] ){
                 this.preview.innerHTML += '<strong>类型:</strong> '+ r["mime"]+', <strong>大小:</strong> '+ (r["size"]/1024).toFixed(2)+' KB<br/>';
             }else{
                 this.preview.innerHTML += '<br/>';
