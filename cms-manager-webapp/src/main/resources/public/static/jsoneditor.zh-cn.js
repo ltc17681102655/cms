@@ -87,7 +87,7 @@ JSONEditor.defaults.editors.img = JSONEditor.AbstractEditor.extend({
         var id=new Date().getTime();
         $(this.label).css("display","block")
         $(this.preview).css("clear","both");
-        $(this.sbutton).attr("for",id).addClass("btn btn-info").css("float","right").css("padding","2px 12px");
+        $(this.sbutton).attr("for",id).addClass("btn btn-info").css("float","right").css("padding","5px 12px");
         $(this.control).find("input").after(this.sbutton);
         $(this.uploader).attr("id",id).hide();
         window.setTimeout(function(){
@@ -101,15 +101,14 @@ JSONEditor.defaults.editors.img = JSONEditor.AbstractEditor.extend({
         this.preview.innerHTML = '';
 
         if( !r && !this.value) return;
-        if( !r && this.value ){
-            r = {success:true};
-        }
 
-        if(r.success){
+
+        // {size: 3023, mime: "image/png", url: "https://img.2boss.cn/resource/img/9c318cbe66239105fbce2e3b00a1a475.jpg"}
+        if(r.size > 0){
             if(this.last_preview === this.value) return;
             this.last_preview = this.value;
-            if(r["data"] ){
-                this.preview.innerHTML += '<strong>类型:</strong> '+ r.data["mime"]+', <strong>大小:</strong> '+ (r.data["size"]/1024).toFixed(2)+' KB<br/>';
+            if(r["url"] ){
+                this.preview.innerHTML += '<strong>类型:</strong> '+ r["mime"]+', <strong>大小:</strong> '+ (r["size"]/1024).toFixed(2)+' KB<br/>';
             }else{
                 this.preview.innerHTML += '<br/>';
             }
@@ -119,7 +118,7 @@ JSONEditor.defaults.editors.img = JSONEditor.AbstractEditor.extend({
             img.src = this.value;
             this.preview.appendChild(img);
         }else{
-            this.preview.innerHTML = '<em>'+ (r.msg||"")+'</em>';
+            this.preview.innerHTML = '<em>'+ ("上传失败")+'</em>';
         }
     },
     enable: function() {
