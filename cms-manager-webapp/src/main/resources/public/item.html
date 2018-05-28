@@ -111,7 +111,7 @@
                         "$extends.createdDate": this.createdDate ? new Date(this.createdDate).pattern("yyyy-MM-dd HH:mm:ss") :"" ,
                         "$extends.lastModifiedDate": this.createdDate ? new Date(this.lastModifiedDate).pattern("yyyy-MM-dd HH:mm:ss") :"",
                         "$extends.scope": this.scope,
-                        "$extends.cityName": this.city ? this.city["udcName"] : "",
+                        "$extends.cityName": this.city ? this.city["udcName"] : "全国",
                         json: this.json
                     });
                 arrays.push(row)
@@ -142,7 +142,7 @@
                 return [buttonDelete, buttonEdit].join(" ");
             }
 
-            var columns = [{title: "操作", formatter: formatterAction}];
+            var columns = [{title: "操作", width:95 , formatter: formatterAction}];
 
             function imageFormat(v, r, o) {
 
@@ -186,8 +186,8 @@
 
             columns.push({title:"城市",field:"$extends.cityName"})
             columns.push({title: "排序", field: "$extends.sort"})
-            columns.push({title: "创建时间", field: "$extends.createdDate"});
-            columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate"})
+            columns.push({title: "创建时间", field: "$extends.createdDate",width:150});
+            columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate",width:150})
 
 
             $('#grid').bootstrapTable({
