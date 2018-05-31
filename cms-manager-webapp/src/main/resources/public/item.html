@@ -224,15 +224,19 @@
 
                 $("#grid").find('[data-toggle="popover"]').popover({placement:'left',animation:false})
 
-                // $("#grid").find('[data-toggle="tooltip"]').popover({placement:'left',animation:false,html:true}).on("show.bs.popover",function () {
-                //     console.log(this)
-                //     this.dataset.originalTitle='';
-                //     this.dataset.content="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
-                // });
-                $("#grid").find('[data-toggle="tooltip"]').tooltip({placement:'left',animation:false,html:true}).on("show.bs.tooltip",function () {
-                //    this.dataset.originalTitle='<p>'+$(this).text()+'</p>';
-                    this.dataset.originalTitle="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
+                $("#grid").find('[data-toggle="tooltip"]').popover({placement:'left',animation:false,html:true}).on("show.bs.popover",function () {
+                    if( $(this).width() < $(this).parent().width() ){ //判断是否需要显示提示窗
+                        return false;
+                    }
+                    this.dataset.originalTitle='';
+                    this.dataset.content="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
                 });
+                // $("#grid").find('[data-toggle="tooltip"]').tooltip({placement:'left',animation:false,html:true}).on("show.bs.tooltip",function () {
+                //     if( $(this).width() < $(this).parent().width() ){
+                //         return false;
+                //     }
+                //     this.dataset.originalTitle="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
+                // });
             })
 
 
