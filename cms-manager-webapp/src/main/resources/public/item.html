@@ -43,6 +43,10 @@
 
     <!-- 自定义扩展 -->
     <script src="static/common.js"></script>
+    <style>
+        table{ table-layout:fixed; }
+        td{ text-overflow:ellipsis; -moz-text-overflow: ellipsis; overflow:hidden; white-space: nowrap; text-align:left }
+    </style>
 
     <script>
         var JSEditor, configMap = {};
@@ -152,40 +156,50 @@
 
                 var IMAGE_MAX_WIDTH_100 = (v || "").indexOf('img.2boss.cn') > -1 ? "?x-oss-process=image/resize,w_30/format,jpg" : "",
                     IMAGE_MAX_WIDTH_600 = (v || "").indexOf('img.2boss.cn') > -1 ? "?x-oss-process=image/resize,w_600/format,jpg" : "",
-                    img = "<img src=" + v + IMAGE_MAX_WIDTH_100 + " style='width:100%;height:100%'/>",
-                    bigImg = "<img src=" + v + IMAGE_MAX_WIDTH_600 + " style='width:100%;height:100%'/>"
+                    img = "<img src=" + v + IMAGE_MAX_WIDTH_100 + " style='width:100%;height:100%' />",
+                    bigImg = "<img src=" + v + IMAGE_MAX_WIDTH_600 + " style='width:100%;height:100%' />"
                 ;
 
-                //class="btn" style="cursor:pointer;padding: 0px;border: 1px solid"
-                return '<span  data-trigger="hover" data-html="true" data-content="' + bigImg + '" data-toggle="popover">' + img + '</span>';
+                return '<span  data-trigger="hover" data-html="true" data-content="' + bigImg + '" data-toggle="popover" >' + img + '</span>';
             }
 
             function colorFormat(value, row, index) {
                 return '<input type="color" class="form-control" data-schemaformat="color" value="' + this.value + '">';
             }
 
+            function textFormat(value, row, index) {
+                return '<span data-trigger="hover" data-html="false" data-placement="left" data-content="xx" title="x" data-toggle="tooltip">'+value+'</span>';
+            }
+
+            function booleanFormat(value, row, index){
+                return value ? "是" : "否";
+            }
+
             $(config.properties).each(function () {
                 for (var i in this) {
+                    console.log(this[i])
                     if (this[i]["type"] != "object" && this[i]["type"] != "array") {
-                        // colNames.push(this[i]["title"]||i);
-
 
                         if (this[i]["type"] == 'img' || this[i]["type"] == 'img') {
                             columns.push({title: this[i]["title"] || i, field: i, formatter: imageFormat, width: 100})
                         }
                         else if (this[i]["format"] === "color") {
-                            columns.push({title: this[i]["title"] || i, field: i, formatter: colorFormat});
+                            columns.push({title: this[i]["title"] || i, field: i, formatter: colorFormat, width: 100 } );
+                        }
+                        else if (this[i]["format"] === "boolean") {
+
+                            columns.push({title: this[i]["title"] || i, field: i, formatter: booleanFormat } );
                         }
                         else {
-                            columns.push({title: this[i]["title"] || i, field: i})
+                            columns.push({title: this[i]["title"] || i, field: i, formatter: textFormat})
                         }
 
                     }
                 }
             });
 
-            columns.push({title:"城市",field:"$extends.cityName"})
-            columns.push({title: "排序", field: "$extends.sort"})
+            columns.push({title:"城市",field:"$extends.cityName",width:80})
+            columns.push({title: "排序", field: "$extends.sort",width: 80})
             columns.push({title: "创建时间", field: "$extends.createdDate",width:150});
             columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate",width:150})
 
@@ -207,7 +221,18 @@
                 pagination:true,
                 columns: columns
             }).on("post-body.bs.table", function () {
-                $("#grid").find('[data-toggle="popover"]').popover();
+
+                $("#grid").find('[data-toggle="popover"]').popover({placement:'left',animation:false})
+
+                // $("#grid").find('[data-toggle="tooltip"]').popover({placement:'left',animation:false,html:true}).on("show.bs.popover",function () {
+                //     console.log(this)
+                //     this.dataset.originalTitle='';
+                //     this.dataset.content="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
+                // });
+                $("#grid").find('[data-toggle="tooltip"]').tooltip({placement:'left',animation:false,html:true}).on("show.bs.tooltip",function () {
+                //    this.dataset.originalTitle='<p>'+$(this).text()+'</p>';
+                    this.dataset.originalTitle="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
+                });
             })
 
 
