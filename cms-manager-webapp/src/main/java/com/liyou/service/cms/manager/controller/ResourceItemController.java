@@ -6,22 +6,14 @@ import com.liyou.framework.base.criteria.predicate.CompoundPredicate;
 import com.liyou.framework.base.model.Response;
 import com.liyou.framework.jpa.support.JpaPageHelp;
 import com.liyou.framework.page.PageRequestCustom;
-import com.liyou.service.cms.core.repository.ResourceDefinitionRepo;
-import com.liyou.service.cms.core.repository.ResourceItemRepo;
-import com.liyou.service.cms.core.entity.ResourceDefinitionEntity;
 import com.liyou.service.cms.core.entity.ResourceItemEntity;
 import com.liyou.service.cms.core.service.ResourceService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by linxiaohui on 15/8/19.
@@ -42,7 +34,8 @@ public class ResourceItemController{
         CompoundPredicate predicate =  Expressions.and()
                 .addEquals("resourceId",resourceId)
                 .addEquals("scope",scope, IfValue.IF_VALUE_NOT_NULL);
-        return service.findItem(predicate, JpaPageHelp.convert(pageRequestCustom));
+        return service.findItem(predicate,
+                JpaPageHelp.convert(pageRequestCustom,new Sort(Sort.Direction.DESC,"lastModifiedDate")));
     }
 
 
@@ -68,8 +61,4 @@ public class ResourceItemController{
         }
         return Response.success();
     }
-
-
-
-
 }
