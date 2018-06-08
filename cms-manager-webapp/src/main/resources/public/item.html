@@ -77,7 +77,7 @@
 
             $.confirm("您确定要删除此数据?删除后将不能恢复!", function () {
                 $.post('resourceItem/delete', {id: id}, function () {
-                    girdReload();
+                    girdReload(1);
                 });
             });
         }
@@ -124,8 +124,22 @@
         }
 
 
-        function girdReload() {
-            $("#grid").bootstrapTable("refresh");
+        function girdReload(pageNumber) {
+
+            if( pageNumber ){
+                $("#grid").bootstrapTable("selectPage",pageNumber);
+            }else {
+                $("#grid").bootstrapTable("refresh");
+            }
+
+        }
+
+        function showIncludePublic() {
+            if( $("#itemForm").find("[name=scope]").val() != ""){
+                $("#includePublic").show().find("input").prop("checked",true);
+            } else {
+                $("#includePublic").hide().find("input").prop("checked",false);
+            }
         }
 
         /** 初始化表格 **/
@@ -133,7 +147,7 @@
 
 
             $("input[name=resourceId]").val(rid);
-            $("#gridDiv").html('<div style="height: 7px">&nbsp;</div><table id="grid" class="table-striped"></table>');
+            $("#gridDiv").html('<div style="height: 7px">&nbsp;</div><table id="grid"></table>');
             $("#itemForm").show();
             var config = configMap["_" + rid];
 
@@ -177,7 +191,6 @@
 
             $(config.properties).each(function () {
                 for (var i in this) {
-                    console.log(this[i])
                     if (this[i]["type"] != "object" && this[i]["type"] != "array") {
 
                         if (this[i]["type"] == 'img' || this[i]["type"] == 'img') {
@@ -199,9 +212,9 @@
             });
 
             columns.push({title:"城市",field:"$extends.cityName",width:80})
-            columns.push({title: "排序", field: "$extends.sort",width: 80})
-            columns.push({title: "创建时间", field: "$extends.createdDate",width:150});
-            columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate",width:150})
+            columns.push({title: "排序", field: "$extends.sort",width: 80,sortable:true})
+            columns.push({title: "创建时间", field: "$extends.createdDate",width:150,sortable:true});
+            columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate",width:150,sortable:true})
 
 
             $('#grid').bootstrapTable({
@@ -219,7 +232,10 @@
                 sidePagination:"server",
                 queryParamsType :"page",
                 pagination:true,
-                columns: columns
+                columns: columns,
+                striped:true,
+                sortStable:true,
+                pageSize:1
             }).on("post-body.bs.table", function () {
 
                 $("#grid").find('[data-toggle="popover"]').popover({placement:'left',animation:false})
@@ -264,7 +280,7 @@
         $(document).ready(function () {
 
             $.get("resource/cities", function (r) {
-                var cities = ["<option value=''>请选择城市</option>"];
+                var cities = ["<option value=''>全国</option>"];
                 $(r).each(function () {
                     cities.push("<option value='" + this["udcCode"] + "'>" + this["udcName"] + "</option>");
                 })
@@ -326,8 +342,14 @@
         <form class="form-inline" id="itemForm" style="display: none">
             <input class="form-control" style="display: none" name="resourceId"/>
             <select class="form-control" style="width: 142px;margin-top: -1px" name="scope"
-                    onchange="initGrid(this.form.resourceId.value)"></select>
+                    onchange="showIncludePublic();girdReload(1);"></select>
+            <!--initGrid(this.form.resourceId.value)-->
+
             <button type="button" class="btn btn-default" onclick="addItem(this.form.resourceId.value)">新增</button>
+
+            <span type="button" class="btn btn-default" id="includePublic" style="display:none">
+                <input type="checkbox" name="includePublic" onchange="girdReload(1)"/> 包含全国
+            </span>
         </form>
 
         <div id="gridDiv"></div>

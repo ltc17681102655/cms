@@ -1,5 +1,6 @@
 package com.liyou.service.cms.manager.controller;
 
+import com.google.common.base.Strings;
 import com.liyou.framework.base.IfValue;
 import com.liyou.framework.base.criteria.Expressions;
 import com.liyou.framework.base.criteria.predicate.CompoundPredicate;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Objects;
+
 /**
  * Created by linxiaohui on 15/8/19.
  */
@@ -29,13 +32,29 @@ public class ResourceItemController{
 
     @ResponseBody
     @RequestMapping("list")
-    public Object list(Long resourceId, Integer scope, PageRequestCustom pageRequestCustom){
+    public Object list(Long resourceId, Integer scope, PageRequestCustom pageRequestCustom,
+                       String sortName,String sortOrder,String includePublic){
 
-        CompoundPredicate predicate =  Expressions.and()
-                .addEquals("resourceId",resourceId)
-                .addEquals("scope",scope, IfValue.IF_VALUE_NOT_NULL);
-        return service.findItem(predicate,
-                JpaPageHelp.convert(pageRequestCustom,new Sort(Sort.Direction.DESC,"lastModifiedDate")));
+        String sortField = Strings.isNullOrEmpty(sortName)
+                ? "lastModifiedDate"
+                : sortName.replace("$extends.","");
+
+        Sort.Direction dir = Objects.equals("asc",sortOrder) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        CompoundPredicate predicate =  Expressions.and().addEquals("resourceId",resourceId);
+
+        if( scope == null ){
+            predicate.addIsNull("scope");
+        }else if( scope != null && Strings.isNullOrEmpty(includePublic)){
+            predicate.addEquals("scope",scope);
+        }else {
+            CompoundPredicate or = Expressions.or()
+                    .addEquals("scope",scope)
+                    .addIsNull("scope");
+            predicate.add(or);
+        }
+
+        return service.findItem(predicate, JpaPageHelp.convert(pageRequestCustom,new Sort(dir,sortField)));
     }
 
 
