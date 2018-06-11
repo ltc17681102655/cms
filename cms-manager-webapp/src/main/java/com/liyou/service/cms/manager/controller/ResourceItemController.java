@@ -39,6 +39,10 @@ public class ResourceItemController{
                 ? "lastModifiedDate"
                 : sortName.replace("$extends.","");
 
+        if( Objects.equals("cityName",sortField) ){
+            sortField = "scope";
+        }
+
         Sort.Direction dir = Objects.equals("asc",sortOrder) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         CompoundPredicate predicate =  Expressions.and().addEquals("resourceId",resourceId);
