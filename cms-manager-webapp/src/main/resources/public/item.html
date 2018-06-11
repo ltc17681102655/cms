@@ -44,8 +44,17 @@
     <!-- 自定义扩展 -->
     <script src="static/common.js"></script>
     <style>
-        table{ table-layout:fixed; }
-        td{ text-overflow:ellipsis; -moz-text-overflow: ellipsis; overflow:hidden; white-space: nowrap; text-align:left }
+        table {
+            table-layout: fixed;
+        }
+
+        td {
+            text-overflow: ellipsis;
+            -moz-text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left
+        }
     </style>
 
     <script>
@@ -85,7 +94,8 @@
         function editItem(id, index) {
 
 
-            var resourceId = $("input[name=resourceId]").val();;
+            var resourceId = $("input[name=resourceId]").val();
+            ;
 
             showDialog();
 
@@ -97,7 +107,7 @@
                 id: data["$extends.id"],
                 sort: data["$extends.sort"],
                 json: data["json"],
-                scope:data["$extends.scope"],
+                scope: data["$extends.scope"],
                 "resourceId": resourceId
             });
             JSEditor.setValue(JSON.parse(data.json), true);
@@ -112,33 +122,38 @@
                     {
                         "$extends.id": this.id,
                         "$extends.sort": this.sort,
-                        "$extends.createdDate": this.createdDate ? new Date(this.createdDate).pattern("yyyy-MM-dd HH:mm:ss") :"" ,
-                        "$extends.lastModifiedDate": this.createdDate ? new Date(this.lastModifiedDate).pattern("yyyy-MM-dd HH:mm:ss") :"",
+                        "$extends.createdDate": dateFormat(this.createdDate,"yyyy-MM-dd HH:mm:ss",""),
+                        "$extends.lastModifiedDate": dateFormat(this.lastModifiedDate,"yyyy-MM-dd HH:mm:ss",""),
                         "$extends.scope": this.scope,
                         "$extends.cityName": this.city ? this.city["udcName"] : "全国",
                         json: this.json
                     });
                 arrays.push(row)
             });
-            return {rows:arrays,total:data.totalElements};
+            return {rows: arrays, total: data.totalElements};
+        }
+
+        function dateFormat(date,pattern,defaultValue) {
+
+            return date ? new Date(date).pattern(pattern) : defaultValue;
         }
 
 
         function girdReload(pageNumber) {
 
-            if( pageNumber ){
-                $("#grid").bootstrapTable("selectPage",pageNumber);
-            }else {
+            if (pageNumber) {
+                $("#grid").bootstrapTable("refresh", {pageNumber: pageNumber});
+            } else {
                 $("#grid").bootstrapTable("refresh");
             }
 
         }
 
         function showIncludePublic() {
-            if( $("#itemForm").find("[name=scope]").val() != ""){
-                $("#includePublic").show().find("input").prop("checked",true);
+            if ($("#itemForm").find("[name=scope]").val() != "") {
+                $("#includePublic").show().find("input").prop("checked", true);
             } else {
-                $("#includePublic").hide().find("input").prop("checked",false);
+                $("#includePublic").hide().find("input").prop("checked", false);
             }
         }
 
@@ -160,11 +175,11 @@
                 return [buttonDelete, buttonEdit].join(" ");
             }
 
-            var columns = [{title: "操作", width:95 , formatter: formatterAction}];
+            var columns = [{title: "操作", width: 95, formatter: formatterAction}];
 
             function imageFormat(v, r, o) {
 
-                if( !v  ){
+                if (!v) {
                     return "";
                 }
 
@@ -182,10 +197,10 @@
             }
 
             function textFormat(value, row, index) {
-                return '<span data-trigger="hover" data-html="false" data-placement="left" data-content="xx" title="x" data-toggle="tooltip">'+value+'</span>';
+                return '<span data-trigger="hover" data-html="false" data-placement="left" data-content="xx" title="x" data-toggle="tooltip">' + value + '</span>';
             }
 
-            function booleanFormat(value, row, index){
+            function booleanFormat(value, row, index) {
                 return value ? "是" : "否";
             }
 
@@ -197,11 +212,11 @@
                             columns.push({title: this[i]["title"] || i, field: i, formatter: imageFormat, width: 100})
                         }
                         else if (this[i]["format"] === "color") {
-                            columns.push({title: this[i]["title"] || i, field: i, formatter: colorFormat, width: 100 } );
+                            columns.push({title: this[i]["title"] || i, field: i, formatter: colorFormat, width: 100});
                         }
                         else if (this[i]["format"] === "boolean") {
 
-                            columns.push({title: this[i]["title"] || i, field: i, formatter: booleanFormat } );
+                            columns.push({title: this[i]["title"] || i, field: i, formatter: booleanFormat});
                         }
                         else {
                             columns.push({title: this[i]["title"] || i, field: i, formatter: textFormat})
@@ -211,47 +226,42 @@
                 }
             });
 
-            columns.push({title:"城市",field:"$extends.cityName",width:80})
-            columns.push({title: "排序", field: "$extends.sort",width: 80,sortable:true})
-            columns.push({title: "创建时间", field: "$extends.createdDate",width:150,sortable:true});
-            columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate",width:150,sortable:true})
+            columns.push({title: "城市", field: "$extends.cityName", width: 80})
+            columns.push({title: "排序", field: "$extends.sort", width: 80, sortable: true})
+            columns.push({title: "创建时间", field: "$extends.createdDate", width: 150, sortable: true});
+            columns.push({title: "最后修改时间", field: "$extends.lastModifiedDate", width: 150, sortable: true})
 
 
             $('#grid').bootstrapTable({
-                url:"resourceItem/list",
-                queryParams:function (params) {
+                url: "resourceItem/list",
+                queryParams: function (params) {
                     var paramsArray = $("#itemForm").serializeArray();
-                    for(var name in params){
-                        paramsArray.push({name:name,value:params[name]})
+                    for (var name in params) {
+                        paramsArray.push({name: name, value: params[name]})
                     }
-                    paramsArray.push({name:"pageIndex",value:params["pageNumber"]});
+                    paramsArray.push({name: "pageIndex", value: params["pageNumber"]});
 
                     return paramsArray;
                 },
-                responseHandler:responseHandler,
-                sidePagination:"server",
-                queryParamsType :"page",
-                pagination:true,
+                responseHandler: responseHandler,
+                sidePagination: "server",
+                queryParamsType: "page",
+                pagination: true,
                 columns: columns,
-                striped:true,
-                sortStable:true
+                striped: true,
+                sortStable: true
             }).on("post-body.bs.table", function () {
 
-                $("#grid").find('[data-toggle="popover"]').popover({placement:'left',animation:false})
+                $("#grid").find('[data-toggle="popover"]').popover({placement: 'left', animation: false})
 
-                $("#grid").find('[data-toggle="tooltip"]').popover({placement:'left',animation:false,html:true}).on("show.bs.popover",function () {
-                    if( $(this).width() < $(this).parent().width() ){ //判断是否需要显示提示窗
-                        return false;
-                    }
-                    this.dataset.originalTitle='';
-                    this.dataset.content="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
-                });
-                // $("#grid").find('[data-toggle="tooltip"]').tooltip({placement:'left',animation:false,html:true}).on("show.bs.tooltip",function () {
-                //     if( $(this).width() < $(this).parent().width() ){
-                //         return false;
-                //     }
-                //     this.dataset.originalTitle="<p style='word-break: break-all;'>"+$(this).text()+"</p>";
-                // });
+                $("#grid").find('[data-toggle="tooltip"]').popover({placement: 'left', animation: false, html: true})
+                    .on("show.bs.popover", function () {
+                        if ($(this).width() < $(this).parent().width()) { //判断是否需要显示提示窗
+                            return false;
+                        }
+                        this.dataset.originalTitle = '';
+                        this.dataset.content = "<p style='word-break: break-all;'>" + $(this).text() + "</p>";
+                    });
             })
 
 
@@ -260,7 +270,13 @@
 
         /** 初始化 JSEditor **/
         function initJSEditor(config) {
-            var options = {disable_edit_json: true, disable_properties: true, theme: 'bootstrap3', language: "cn",disable_collapse:true};
+            var options = {
+                disable_edit_json: true,
+                disable_properties: true,
+                theme: 'bootstrap3',
+                language: "cn",
+                disable_collapse: true
+            };
             if (JSEditor) {
                 JSEditor.destroy();
             }
@@ -296,9 +312,10 @@
                 if (JSEditor.validate().length > 0) {
                     JSEditor.setOption("show_errors", "always");
                 } else {
+                    var isAdd = $("#id").val() == "";
                     $.post($f.attr("action"), $f.serializeArray(), function () {
                         closeDialog();
-                        girdReload()
+                        girdReload(isAdd ? 1 : null);
                     })
                 }
 
@@ -342,7 +359,6 @@
             <input class="form-control" style="display: none" name="resourceId"/>
             <select class="form-control" style="width: 142px;margin-top: -1px" name="scope"
                     onchange="showIncludePublic();girdReload(1);"></select>
-            <!--initGrid(this.form.resourceId.value)-->
 
             <button type="button" class="btn btn-default" onclick="addItem(this.form.resourceId.value)">新增</button>
 
@@ -359,49 +375,51 @@
 
 <div id="editor_holder_dialog" style="width: 100%;display: none">
     <form method="post" id="postForm" action="resourceItem/saveOrUpdate">
-    <input class="form-control" style="display: none" name="id" id="id"/>
-    <input class="form-control" style="display: none" name="resourceId"/>
-    <input class="form-control" style="display: none" name="json" id="json"/>
-    <div class="row">
+        <input class="form-control" style="display: none" name="id" id="id"/>
+        <input class="form-control" style="display: none" name="resourceId"/>
+        <input class="form-control" style="display: none" name="json" id="json"/>
+        <div class="row">
 
 
-        <!-- 表单域开始 -->
-        <div class="col-md-12">
-            <div id="editor_holder" style="overflow: auto"></div>
-        </div>
-        <!-- 表单域结束 -->
-
-        <!-- 排序滑条开始 -->
-        <div class="col-md-2">
-            <div class="input-group">
-                <span class="input-group-addon">排序</span>
-                <input class="form-control" style="width: 100px" type="number" id="sort" form="postForm" name="sort" value="0" required/>
+            <!-- 表单域开始 -->
+            <div class="col-md-12">
+                <div id="editor_holder" style="overflow: auto"></div>
             </div>
-        </div>
+            <!-- 表单域结束 -->
 
-
-        <div class="col-md-2">
-            <div class="input-group">
-                <span class="input-group-addon">城市</span>
-                <select class="form-control" name="scope" id="scope" style="width: 140px;left: -3px" form="postForm"></select>
+            <!-- 排序滑条开始 -->
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon">排序</span>
+                    <input class="form-control" style="width: 100px" type="number" id="sort" form="postForm" name="sort"
+                           value="0" required/>
+                </div>
             </div>
+
+
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon">城市</span>
+                    <select class="form-control" name="scope" id="scope" style="width: 140px;left: -3px"
+                            form="postForm"></select>
+                </div>
+            </div>
+
+            <!-- 排序滑条结束 -->
+
+            <!-- 按钮开始 -->
+            <div class="col-md-12">
+                <button type="button" style="margin-top: 5px;float: right" class="btn btn-lg" href="#" value="0"
+                        role="button" onclick="closeDialog()">关闭
+                </button>
+                <span style="float: right">&nbsp;</span>
+                <button type="submit" style="margin-top: 5px;float: right" class="btn btn-lg btn-primary" href="#"
+                        role="button" id="saveConfig" form="postForm">保存
+                </button>
+            </div>
+            <!-- 按钮结束 -->
+
         </div>
-
-        <!-- 排序滑条结束 -->
-
-        <!-- 按钮开始 -->
-        <div class="col-md-12">
-            <button type="button" style="margin-top: 5px;float: right" class="btn btn-lg" href="#" value="0"
-                    role="button" onclick="closeDialog()">关闭
-            </button>
-            <span style="float: right">&nbsp;</span>
-            <button type="submit" style="margin-top: 5px;float: right" class="btn btn-lg btn-primary" href="#"
-                    role="button" id="saveConfig" form="postForm">保存
-            </button>
-        </div>
-        <!-- 按钮结束 -->
-
-    </div>
     </form>
 </div>
 
