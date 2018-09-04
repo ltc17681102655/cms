@@ -6,6 +6,7 @@ import com.liyou.framework.base.criteria.predicate.CompoundPredicate;
 import com.liyou.framework.base.model.Response;
 import com.liyou.framework.common.cache.Cacheable;
 import com.liyou.framework.common.utils.JSONUtils;
+import com.liyou.framework.web.annotation.Authority;
 import com.liyou.service.cms.manager.Resource;
 import com.liyou.service.cms.core.UdcUtils;
 import com.liyou.service.cms.core.entity.ResourceDefinitionEntity;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("resource")
+@Authority(permissions = Constants.AUTH_LOGIN)
 public class ResourceController {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);

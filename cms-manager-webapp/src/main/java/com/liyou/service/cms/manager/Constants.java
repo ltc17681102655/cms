@@ -2,6 +2,7 @@ package com.liyou.service.cms.manager;
 
 public class Constants {
 
+    public static final String AUTH_LOGIN = "LOGIN";
 
 
     public static final String IMG_DOMAIN="resource/img/";

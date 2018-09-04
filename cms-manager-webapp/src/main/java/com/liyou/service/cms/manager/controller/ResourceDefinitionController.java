@@ -9,6 +9,8 @@ import com.liyou.framework.base.model.KeyTrimMap;
 import com.liyou.framework.base.model.Response;
 import com.liyou.framework.common.json.RawValue;
 import com.liyou.framework.common.utils.JSONUtils;
+import com.liyou.framework.web.annotation.Authority;
+import com.liyou.service.cms.manager.Constants;
 import com.liyou.service.cms.manager.Resource;
 import com.liyou.service.cms.core.entity.ResourceDefinitionEntity;
 import com.liyou.service.cms.core.service.ResourceService;
@@ -27,6 +29,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("resourceDefinition")
+@Authority(permissions = Constants.AUTH_LOGIN)
 public class ResourceDefinitionController {
 
 

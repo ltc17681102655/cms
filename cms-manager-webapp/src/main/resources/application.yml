@@ -76,7 +76,7 @@ dubbo:
 server:
   context-path: /cms
 
-packet_enable: false
+packet_enable: true
 
 
 #oss
