@@ -115,7 +115,7 @@
 
         function responseHandler(data) {
             var arrays = [];
-            $(data.content).each(function () {
+            $(data.content||data.rows).each(function () {
                 var row = $.extend(
                     {},
                     JSON.parse(this.json),
@@ -130,7 +130,7 @@
                     });
                 arrays.push(row)
             });
-            return {rows: arrays, total: data.totalElements};
+            return {rows: arrays, total: data.totalElements||data.total};
         }
 
         function dateFormat(date,pattern,defaultValue) {
