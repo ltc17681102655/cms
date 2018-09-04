@@ -10,7 +10,6 @@ import com.liyou.service.cms.manager.Constants;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
  * Created by linxiaohui on 15/8/18.
  */
 @Component
-public class AuditorUtils implements AuditorAware<Integer> , UserAware {
+public class AuditorUtils implements AuditorAware<Long> , UserAware {
 
 
     public AuditorUtils(){
@@ -27,8 +26,8 @@ public class AuditorUtils implements AuditorAware<Integer> , UserAware {
 
 
     @Override
-    public Integer getCurrentAuditor() {
-        return 0;
+    public Long getCurrentAuditor() {
+        return 0L;
     }
 
 
@@ -38,12 +37,12 @@ public class AuditorUtils implements AuditorAware<Integer> , UserAware {
      * @return
      */
     @Override
-    public User currentUser() {
+    public User<Long> currentUser() {
 
         return new User() {
             @Override
-            public Serializable getId() {
-                return 0;
+            public Long getId() {
+                return 0L;
             }
 
             @Override
