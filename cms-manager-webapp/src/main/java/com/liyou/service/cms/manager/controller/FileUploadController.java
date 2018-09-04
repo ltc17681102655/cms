@@ -8,6 +8,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.liyou.framework.base.model.Response;
 import com.liyou.framework.base.utils.DateUtils;
+import com.liyou.framework.web.annotation.Authority;
 import com.liyou.service.cms.manager.Constants;
 import com.liyou.service.cms.manager.util.ImgUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -26,6 +27,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("upload")
+@Authority(permissions = Constants.AUTH_LOGIN)
 public class FileUploadController {
 
     @Value("${oss.accessKeyId}")
