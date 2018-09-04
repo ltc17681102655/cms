@@ -6,7 +6,7 @@
 
     <groupId>com.liyou.service.cms</groupId>
     <artifactId>cms-parent</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <modules>
         <module>cms-core</module>
         <module>cms-manager-webapp</module>

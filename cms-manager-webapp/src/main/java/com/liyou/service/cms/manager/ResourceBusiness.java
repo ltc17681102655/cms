@@ -114,6 +114,7 @@ public class ResourceBusiness implements ResourceClient {
         resourceItem.setJson( itemEntity.getJson() );
         resourceItem.setScope( itemEntity.getScope() );
         resourceItem.setSortNumber( itemEntity.getSort() );
+        resourceItem.setLastModifiedDate( itemEntity.getLastModifiedDate() );
 
         return resourceItem;
     }

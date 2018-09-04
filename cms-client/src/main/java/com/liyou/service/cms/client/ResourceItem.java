@@ -4,6 +4,7 @@ import com.liyou.framework.common.utils.JSONUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.function.Function;
 
 /***
@@ -19,6 +20,7 @@ public class ResourceItem implements Serializable{
     private String json;
     private Long scope;
     private Integer sortNumber;
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -50,6 +52,14 @@ public class ResourceItem implements Serializable{
 
     public void setSortNumber(Integer sortNumber) {
         this.sortNumber = sortNumber;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     public <T> T convert(Class<T> cla){
