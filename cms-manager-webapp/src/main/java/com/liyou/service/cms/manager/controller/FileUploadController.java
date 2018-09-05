@@ -27,7 +27,6 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("upload")
-@Authority(permissions = Constants.AUTH_LOGIN)
 public class FileUploadController {
 
     @Value("${oss.accessKeyId}")
