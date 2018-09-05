@@ -48,7 +48,7 @@ public class AuditorUtils implements AuditorAware<Long> , UserAware {
             @Override
             public List permissions(){
 
-                String accessToken = WebUtils.findHeader("TBSAccessToken");
+                String accessToken = WebUtils.findCookValue("TBSAccessToken");
                 if( Strings.isNullOrEmpty(accessToken) ){
                     return Collections.emptyList();
                 }
