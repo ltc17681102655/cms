@@ -9,6 +9,7 @@ import com.liyou.framework.web.util.WebUtils;
 import com.liyou.service.cms.manager.Constants;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,10 @@ public class AuditorUtils implements AuditorAware<Long> , UserAware {
 
                 String accessToken = WebUtils.findCookValue("TBSAccessToken");
                 if( Strings.isNullOrEmpty(accessToken) ){
-                    return Collections.emptyList();
+                    accessToken = WebUtils.findHeader("TBSAccessToken");
+                }
+                if( Strings.isNullOrEmpty(accessToken) ){
+                    return Collections.EMPTY_LIST;
                 }
                 return Lists.newArrayList(Constants.AUTH_LOGIN);
             }
