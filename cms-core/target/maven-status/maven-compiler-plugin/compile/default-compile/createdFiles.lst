@@ -1,0 +1,11 @@
+com\liyou\service\cms\core\entity\UdcInfoEntity.class
+com\liyou\service\cms\core\repository\ResourceItemRepo.class
+com\liyou\service\cms\core\entity\ResourceDefinitionEntity$Status.class
+com\liyou\service\cms\core\repository\UdcInfoEntityRepo.class
+com\liyou\service\cms\core\entity\ResourceDefinitionEntity.class
+com\liyou\service\cms\core\entity\ResourceItemEntity.class
+com\liyou\service\cms\core\repository\ResourceDefinitionRepo.class
+com\liyou\service\cms\core\UdcUtils.class
+com\liyou\service\cms\core\BusinessRuntimeException.class
+com\liyou\service\cms\core\service\impl\ResourceServiceImpl.class
+com\liyou\service\cms\core\service\ResourceService.class

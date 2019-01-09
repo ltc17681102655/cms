@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:p="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>资源定义</title>
+
+    <!-- jquery -->
+    <script src="static/jquery.min.js"></script>
+
+    <!-- bootstrap -->
+    <link href="static/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="static/bootstrap.min.js"></script>
+
+
+    <!-- bootstrap-table -->
+    <link href="static/css/bootstrap-table.min.css" rel="stylesheet">
+    <script src="static/bootstrap-table.min.js"></script>
+    <script src="static/bootstrap-table-zh-CN.js"></script>
+
+
+    <!-- json-editor -->
+    <script src="static/jsoneditor.js"></script>
+    <script src="static/jsoneditor.zh-cn.js"></script>
+
+    <!-- cookie -->
+    <script src="static/jquery.cookie.min.js"></script>
+
+    <!-- dialog  -->
+    <script src="static/dialog-plus.js"></script>
+    <script src="static/dialog.js"></script>
+
+    <!-- bootstrapValidator -->
+    <script src="static/bootstrapValidator.min.js"></script>
+    <link href="static/css/bootstrapValidator.min.css" rel="stylesheet">
+
+
+    <!-- bootbox -->
+    <script src="static/bootbox.min.js"></script>
+
+    <!-- 自定义扩展 -->
+    <script src="static/common.js"></script>
+
+    <script>
+
+        var editorDialog;
+
+        /** 打开窗口 **/
+        function openView(schema, config) {
+
+            var $window = $(window),
+                windowWidth = $window.width(),
+                windowHeight = $window.height();
+
+            editorDialog = dialog({title: "资源定义", content: $("#editor_holder_dialog")});
+            editorDialog.width(windowWidth - 100).height(windowHeight - 100).showModal();
+
+            $("#editor_holder").height(windowHeight - 100);
+            $("#config").height(windowHeight - 245).val(JSON.stringify(schema, null, 2));
+            initJSEditor(schema, config)
+            $("#editor_holder_dialog").find("button,input,select,textarea").prop("disabled", false);
+
+
+        }
+
+        /** 初始化表格 **/
+        function initGrid() {
+
+        }
+
+
+        var JSEditor, example = {
+            "title": "例子",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "姓名",
+                    "description": "此处填写你的姓名",
+                    "minLength": 4,
+                    "default": ""
+                },
+                "age": {
+                    "type": "integer",
+                    "title": "年龄",
+                    "default": "",
+                    "minimum": 18,
+                    "maximum": 99
+                },
+                "logo": {
+                    "type": "img",
+                    "title": "头像",
+                    "default": ""
+                },
+                "favorite_color": {
+                    "type": "string",
+                    "format": "color",
+                    "title": "喜欢的颜色",
+                    "default": "#ffa500"
+                },
+                "gender": {
+                    "type": "string",
+                    "title": "性别",
+                    "enum": [
+                        "男",
+                        "女"
+                    ]
+                },
+                "location": {
+                    "type": "object",
+                    "title": "地址",
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "title": "城市",
+                            "default": ""
+                        },
+                        "street": {
+                            "title": "街道",
+                            "type": "string",
+                            "default": ""
+                        },
+                        "address": {
+                            "type": "string",
+                            "title": "地址",
+                            "description": "这里是你的地址",
+                            "template": "{{city}}  {{street}}",
+                            "watch": {
+                                "city": "location.city",
+                                "street": "location.street"
+                            }
+                        }
+                    }
+                },
+                "pets": {
+                    "type": "array",
+                    "format": "table",
+                    "title": "宠物",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "object",
+                        "title": "宠物",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "title": "宠物类型",
+                                "enum": [
+                                    "猫",
+                                    "狗",
+                                    "鸟",
+                                    "猪",
+                                    "兔子"
+                                ],
+                                "default": "狗"
+                            },
+                            "name": {
+                                "title": "宠物名字",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "default": [
+                        {
+                            "type": "狗",
+                            "name": "花花"
+                        }
+                    ]
+                }
+            }
+        };
+
+
+        /** 预览 **/
+        function preview(id, index) {
+
+            reset();
+            var data = $("#grid").bootstrapTable('getData'),
+                _data = data[index];
+            $("#resource_form").setData(_data);
+            if( _data && _data.length>0 ){
+                openView( {"type":"array",title:"数据","items":getJSEditorConfig()},{disable_collapse:false} );//"format":"table",
+                JSEditor.setValue(_data);
+                $("#config").val( JSON.stringify(JSON.parse(data["definition"]) ,null,2) );
+            }else{
+                openView( getJSEditorConfig() );
+            }
+            $("#editor_holder_dialog").find("button,input,select,textarea").not(".json-editor-btn-collapse").prop("disabled",true);
+            $("#editor_holder").find("button").not(".json-editor-btn-collapse").hide();
+
+        }
+
+        /** 发布 **/
+        function release(id) {
+
+            $.confirm("您确定要发布此数据?发布后将不能修改和删除!", function () {
+                post('resourceDefinition/release', {"id": id});
+            });
+        }
+
+        /** 删除 **/
+        function deleteDefinition(id) {
+
+            $.confirm("您确定要删除此数据?删除后将不能恢复!", function () {
+                post('resourceDefinition/delete', {"id": id});
+            });
+        }
+
+        function post(url, data) {
+
+            $.post(url, data, function (r) {
+                girdReload();
+            }, 'json')
+        }
+
+        /** 编辑 **/
+        function edit(id,index) {
+
+
+            reset();
+            var data = $("#grid").bootstrapTable('getData');
+            $("#resource_form").setData(data[index]);
+            openView(getJSEditorConfig());
+            JSEditor.setValue(JSON.parse(data["defaultValue"]));
+        }
+
+        /** 获取JSEditor 配置操作 **/
+        function getJSEditorConfig() {
+
+            try {
+                var config = JSON.parse($("#config").val());
+                if (!$.isPlainObject(config)) {
+                    $.alert("请检查配置是否正确!");
+                    return;
+                }
+                return config;
+            } catch (e) {
+                $.alert("配置不是正确的 JSON ");
+            }
+        }
+
+
+        /** 初始化 JSEditor **/
+        function initJSEditor(schema, config) {
+            var options = {
+                //disable_collapse:true,
+                disable_edit_json: true,
+                //disable_array_add:true,
+                //disable_array_delete:true,
+                disable_properties: true,
+                theme: 'bootstrap3'
+            };
+            if (JSEditor) {
+                JSEditor.destroy();
+            }
+            JSEditor = new JSONEditor(document.getElementById("editor_holder"), $.extend({schema: schema}, options, config || {}));
+        }
+
+        /** 给更查看效果按钮,绑定重绘 JSEditor 的事件 **/
+        function bindUpdateSchema() {
+
+            $("#applyConfig").on("click", function () {
+                try {
+                    var config = getJSEditorConfig();
+                    if (config) {
+                        initJSEditor(config);
+                    }
+                } catch (e) {
+                    $.alert("配置不是正确的 JSON ");
+                }
+            });
+        }
+
+
+        /** 给配置编辑器绑定格式化事件 **/
+        function bindFormatConfig() {
+
+            $("#config").on("blur", function () {
+                try {
+                    $(this).val(JSON.stringify(JSON.parse($(this).val()), null, 2));
+                } catch (e) {
+                    $.alert("配置不是正确的 JSON ");
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            initGrid();
+            bindUpdateSchema();
+            bindFormatConfig();
+
+
+            $("#resource_form").bootstrapValidator({framework: 'bootstrap',fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: '资源名称不能为空'
+                            }
+                        }
+                    },
+                    position: {
+                        validators: {
+                            notEmpty: {
+                                message: '资源位置不能为空'
+                            }
+                        }
+                    },
+                    definition : {
+                        validators: {
+                            notEmpty: {
+                                message: '资源配置不能为空'
+                            }
+                        }
+                    }
+                }})
+                .on('success.form.bv', function (e, data) {
+
+                    e.preventDefault();
+                    var $form = $(e.target);
+                    $.post( $form.attr("action"),$form.serializeArray() , function () {
+                        editorDialog.close().remove();
+                        girdReload();
+                    });
+                })
+                ;
+        });
+
+        function formatterStatus(value,row,index) {
+            switch (value||""){
+                case "edit" : return "编辑中";
+                case "released" : return "已发布";
+                default : return "--";
+            }
+        }
+
+        function formatterDate(value,row,index) {
+
+            return value ? new Date(value).pattern( "yyyy-MM-dd HH:mm:ss") :"";
+        }
+
+        function girdReload() {
+            var query = $("#search").serialize();
+            //query:query
+            $("#grid").bootstrapTable("refresh",{url:"resourceDefinition/list?"+query});
+        }
+
+        function formatterAction(value,row,index) {
+
+            var buttonDelete = "<button type='button' class='btn-xs btn-danger' onclick='deleteDefinition("+row.id+")'>删除</button>",
+                buttonEdit = "<button type='button' class='btn-xs btn-warning' onclick='edit("+row.id+","+index+")'>编辑</button>",
+                buttonReleased = "<button type='button' class='btn-xs btn-success' onclick='release("+row.id+")'>发布</button>",
+                buttonRead = "<button type='button' class='btn-xs btn-primary' onclick='preview("+row.id+","+index+")'>查看</button>"
+            ;
+            switch (row.status||""){
+                case "edit" : return [buttonDelete,buttonEdit,buttonReleased].join(" ");
+                case "released" : return buttonRead;
+                default : return "--";
+            }
+        }
+
+        function reset() {
+            //重置表单验证
+            $("#resource_form").data("bootstrapValidator").resetForm();
+            //重置表单
+            $('#resource_form')[0].reset();
+        }
+
+        function addDefinition() {
+
+            reset();
+            openView(example);
+        }
+    </script>
+</head>
+<body style="padding: 5px">
+
+
+<div class="container-fluid" id="editor_holder_dialog" style="display: none">
+
+    <div class="row">
+        <div class="col-md-9" id="editor_holder" style="overflow: auto"></div>
+        <div class="col-md-3">
+            <form method="post" id="resource_form" action="resourceDefinition/saveOrUpdate">
+                <input class="form-control" style="display: none" name="id"/>
+                <textarea class="form-control" style="display: none" name="defaultValue" id="defaultValue"></textarea>
+                <input class="form-control" style="display: none" name="value"/>
+
+                <button type="button" class="btn btn-default btn-lg" href="#" role="button" id="applyConfig">查看效果
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" href="#" role="button" id="saveConfig"
+                        form="resource_form">保存配置
+                </button>
+
+                <div class="form-group" style="margin-top: 5px;margin-bottom: 0px">
+                    <input class="form-control"  placeholder="请输入资源名称" name="name" />
+                </div>
+
+                <div class="form-group" style="margin-top: 5px;margin-bottom: 0px">
+                    <input class="form-control"  placeholder="请输入资源位置" name="position" />
+                </div>
+
+                <div class="form-group" style="margin-top: 5px;margin-bottom: 0px">
+                    <textarea class="form-control" style="width: 100%;height: 100%;" id="config" name="definition"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+<form class="navbar-form navbar-left" id="search">
+    <div class="form-group">
+        <input name="name" class="form-control" placeholder="资源名称">
+        <input name="position" class="form-control" placeholder="资源位置">
+        <select name="status" class="form-control" style="width: 142px;margin-top: -1px">
+            <option value="">请选择</option>
+            <option value="edit">编辑中</option>
+            <option value="released">已发布</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <button type="button" class="btn btn-default" onclick="addDefinition()">新增</button>
+        <button type="button" class="btn btn-default" onclick="girdReload()">查询</button>
+    </div>
+
+</form>
+
+<table data-toggle="table" id="grid" data-url="resourceDefinition/list">
+    <thead>
+    <tr>
+        <th data-field="id">编号</th>
+        <th data-field="name">资源名称</th>
+        <th data-field="position">资源位置</th>
+        <th data-field="status" data-formatter="formatterStatus">状态</th>
+        <th data-field="createdDate" data-formatter="formatterDate">创建时间</th>
+        <th data-field="lastModifiedDate" data-formatter="formatterDate">最后更新时间</th>
+        <th data-field="" data-formatter="formatterAction">操作</th>
+    </tr>
+    </thead>
+</table>
+
+
+</body>
+</html>
+
+
+
+
+
+
