@@ -12,8 +12,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        //权限拦截器
-        registry.addInterceptor( new AnnotationAuthorityInterceptor());
-        super.addInterceptors(registry);
+//        //权限拦截器
+//        registry.addInterceptor(new AnnotationAuthorityInterceptor());
+//        super.addInterceptors(registry);
     }
 }
